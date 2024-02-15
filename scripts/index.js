@@ -11,9 +11,11 @@ function makeCard(object, deleteCard) {
   const cardImage = cardElement.querySelector(".card__image");
   const cardTitle = cardElement.querySelector(".card__title");
   const cardButtonDel = cardElement.querySelector(".card__delete-button");
+   
 
   cardImage.src = object.link;
   cardTitle.textContent = object.name;
+  cardImage.alt = object.alt;
 
   cardButtonDel.addEventListener("click", deleteCard);
 
