@@ -31,3 +31,4 @@ const initialCards = [
     }
 ];
 
+export { initialCards };
