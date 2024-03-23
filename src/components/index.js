@@ -1,9 +1,9 @@
 import '../pages/index.css';
-import { initialCards } from './cards.js';
 import { makeCard, deleteCard, likeCard } from './card.js';
 import { openPopup, closePopup, closePopUpByOverlay } from './modal.js';
 import { validationSettings } from './validation.js';
 import { enableValidation, clearValidation } from './validation.js';
+import { config, getUserProfile, getCards, patchEditedUserProfile, postCard } from './api.js';
 
 //  Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
@@ -28,12 +28,21 @@ const formEditProfile = page.querySelector('.popup_type_edit .popup__form');
 const profileEditButton = page.querySelector('.profile__edit-button');
 const cardAddButton = page.querySelector('.profile__add-button');
 const popupCloseButtons = page.querySelectorAll('.popup__close');
+const profileImage = page.querySelector('.profile__image');
 
 
-// Вывести карточки на страницу
-initialCards.forEach(function (item) {
-  plasesList.append(makeCard(item, deleteCard, likeCard, setImageToPopup, openPopupImage));
-});
+// Получение массива объектов карточек с сервера, объекта с информацией о пользователе, вставка их в DOM
+Promise.all([getCards(config), getUserProfile(config)])
+  .then(([cards, userData]) => {
+    profileName.textContent = userData.name // Добавление имени пользователя в DOM
+    profileDescription.textContent = userData.about // Добавление описания пользователя в DOM
+    profileImage.style.backgroundImage = `url(${userData.avatar})` // Добавление ссылки на картинку для аватара в DOM
+    const currentUserId = userData._id;
+
+    cards.forEach(card => {
+      plasesList.append(makeCard(card, deleteCard, likeCard, setImageToPopup, openPopupImage, currentUserId));
+    });
+  })
 
 // Функция открытия поп-апа редактирования профиля 
 function openPopupProfileEdit() {
@@ -73,8 +82,12 @@ function handleFormAddCardSubmit(evt) {
   cardObject.name = inputPlaceNameForm.value;
   cardObject.alt = inputPlaceNameForm.value;
   cardObject.link = inputLinkImageForm.value;
-  const newCard = makeCard(cardObject, deleteCard, likeCard, setImageToPopup, openPopupImage);
-  plasesList.prepend(newCard);
+  postCard(config, cardObject)
+    .then((card) => {
+      const currentUserId = card.owner._id;
+      const newCard = makeCard(card, deleteCard, likeCard, setImageToPopup, openPopupImage, currentUserId);
+      plasesList.prepend(newCard);
+})
   closePopup(popupAddCard);
   formAddCard.reset();
   clearValidation(formAddCard, validationSettings);
@@ -88,9 +101,14 @@ function closePopupByButton (evt) {
 // Функция изменения данных профиля
 function handleFormEditProfileSubmit(evt) {
   evt.preventDefault(); 
-  profileName.textContent = inputProfileName.value;
-  profileDescription.textContent = inputProfileDescription.value;
-  closePopup(popupEditProfile);
+  const nameValue = inputProfileName.value;
+  const descriptionValue = inputProfileDescription.value;
+  patchEditedUserProfile(config, nameValue, descriptionValue)
+    .then(userDataEdited => {
+      profileName.textContent = userDataEdited.name;
+      profileDescription.textContent = userDataEdited.about;
+    });
+  closePopup(popupEditProfile); 
 }
 
 // Обработчики закрытия поп-апов кликом по кнопке крестик
