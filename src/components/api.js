@@ -92,7 +92,7 @@ const patchAvatar = (config, avatarLink) => {
 
 // Функция проверки действительности url адреса и что это URL на изображение
 const isCorrectUrl = (link) => {
-  return fetch(link, {
+  return fetch(`https://cors-anywhere.herokuapp.com/${link}`, {
     method: 'HEAD'
   })
   .then(res => {
