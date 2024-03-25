@@ -90,5 +90,5 @@ const patchAvatar = (config, avatarLink) => {
   .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`))
 }
 
-export { config, getUserProfile, getCards, patchEditedUserProfile, postCard, deleteCardFromServer, putLikeCard, deleteLikeCard, patchAvatar, isCorrectUrl }
+export { config, getUserProfile, getCards, patchEditedUserProfile, postCard, deleteCardFromServer, putLikeCard, deleteLikeCard, patchAvatar }
 

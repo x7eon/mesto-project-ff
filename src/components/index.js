@@ -3,7 +3,7 @@ import { makeCard, deleteCard, likeCard } from './card.js';
 import { openPopup, closePopup, closePopUpByOverlay } from './modal.js';
 import { validationSettings } from './validation.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { config, getUserProfile, getCards, patchEditedUserProfile, postCard, patchAvatar, isCorrectUrl } from './api.js';
+import { config, getUserProfile, getCards, patchEditedUserProfile, postCard, patchAvatar } from './api.js';
 
 //  Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
