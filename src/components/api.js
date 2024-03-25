@@ -90,5 +90,18 @@ const patchAvatar = (config, avatarLink) => {
   .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`))
 }
 
-export { config, getUserProfile, getCards, patchEditedUserProfile, postCard, deleteCardFromServer, putLikeCard, deleteLikeCard, patchAvatar }
+// Функция проверки действительности url адреса и что это URL на изображение
+const isCorrectUrl = (link) => {
+  return fetch(link, {
+    method: 'HEAD'
+  })
+  .then(res => {
+    if(res.ok && res.headers.get('Content-Type') === 'image/jpeg')
+    {
+      console.log('Изображение прошло проверку')
+    }
+  })
+}
+
+export { config, getUserProfile, getCards, patchEditedUserProfile, postCard, deleteCardFromServer, putLikeCard, deleteLikeCard, patchAvatar, isCorrectUrl }
 

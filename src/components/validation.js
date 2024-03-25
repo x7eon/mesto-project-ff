@@ -1,4 +1,5 @@
-export const validationSettings = {
+// Объект настроек валидации
+const validationSettings = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
   submitButtonSelector: '.popup__button',
@@ -7,6 +8,7 @@ export const validationSettings = {
   errorClass: 'popup__error_visible'
 }
 
+// Функция показа ошибки валидации инпута
 const showInputError = (formElement, inputElement, validationSettings, errorMessage) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.add(validationSettings.inputErrorClass);
@@ -14,6 +16,7 @@ const showInputError = (formElement, inputElement, validationSettings, errorMess
   errorElement.classList.add(validationSettings.errorClass);
 }
 
+// Функция скрытия ошибки валидации инпута
 const hideInputError = (formElement, inputElement, validationSettings) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.remove(validationSettings.inputErrorClass);
@@ -21,6 +24,7 @@ const hideInputError = (formElement, inputElement, validationSettings) => {
   errorElement.textContent = '';
 };
 
+// Функция проверки валидности инпута
 const isValid = (formElement, inputElement, validationSettings) => {
   if (inputElement.validity.patternMismatch) { 
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
@@ -36,6 +40,7 @@ const isValid = (formElement, inputElement, validationSettings) => {
   }
 };
 
+// Функция установки слушителей ввода на все инпуты одной формы для проверки валидности
 const setEventListener = (formElement, validationSettings) => {
   const inputList = Array.from(formElement.querySelectorAll(validationSettings.inputSelector));
   const buttonElement = formElement.querySelector(validationSettings.submitButtonSelector);
@@ -48,6 +53,7 @@ const setEventListener = (formElement, validationSettings) => {
   });
 };
 
+// Функция включения валидации всех форм
 const enableValidation = (validationSettings) => {
   const formList = Array.from(document.querySelectorAll(validationSettings.formSelector));
   formList.forEach((formElement) => {
@@ -55,12 +61,14 @@ const enableValidation = (validationSettings) => {
   }); 
 };
 
+// Функция проверки невалидности хотя бы одного инпута 
 const hasInvalidInput = (inputList) => {
   return inputList.some((inputElement) => {
     return (!inputElement.validity.valid);
   });
 };
 
+// Функция переключения состояния кнопки submit
 const toggleButtonState = (inputList, buttonElement, validationSettings) => {
   if (hasInvalidInput(inputList)) {
     buttonElement.disabled = true;
@@ -72,6 +80,7 @@ const toggleButtonState = (inputList, buttonElement, validationSettings) => {
   }
 };
 
+// Функция очистки ошибок валидации
 const clearValidation = (formElement, validationSettings) => {
   const inputList = Array.from(formElement.querySelectorAll(validationSettings.inputSelector));
   const buttonElement = formElement.querySelector(validationSettings.submitButtonSelector);
@@ -82,4 +91,4 @@ const clearValidation = (formElement, validationSettings) => {
   });
 };
 
-export { enableValidation, clearValidation}
+export { validationSettings, enableValidation, clearValidation}

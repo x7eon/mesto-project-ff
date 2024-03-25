@@ -9,6 +9,7 @@ function makeCard(cardObject, deleteCard, likeCard, setImageToPopup, openPopupIm
   const cardDelButton = cardElement.querySelector('.card__delete-button');
   const cardButtonLike = cardElement.querySelector('.card__like-button');
   const cardLikesCounter = cardElement.querySelector('.card__like-counter');
+
   const cardId = cardObject._id;
   const ownerId = cardObject.owner._id;
   let likesArray = cardObject.likes;
@@ -81,7 +82,7 @@ function deleteCard(evt) {
   card.remove();
 }
 
-// Функция переключения лайка карточки
+// Функция переключения класса лайка карточки
 function likeCard(evt) {
   evt.target.classList.toggle('card__like-button_is-active');
 }
