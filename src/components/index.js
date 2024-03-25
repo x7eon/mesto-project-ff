@@ -3,7 +3,7 @@ import { makeCard, deleteCard, likeCard } from './card.js';
 import { openPopup, closePopup, closePopUpByOverlay } from './modal.js';
 import { validationSettings } from './validation.js';
 import { enableValidation, clearValidation } from './validation.js';
-import { config, getUserProfile, getCards, patchEditedUserProfile, postCard } from './api.js';
+import { config, getUserProfile, getCards, patchEditedUserProfile, postCard, patchAvatar } from './api.js';
 
 //  Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
@@ -29,7 +29,10 @@ const profileEditButton = page.querySelector('.profile__edit-button');
 const cardAddButton = page.querySelector('.profile__add-button');
 const popupCloseButtons = page.querySelectorAll('.popup__close');
 const profileImage = page.querySelector('.profile__image');
-
+const avatarProfile = page.querySelector('.profile__image');
+const popupAvatar = page.querySelector('.popup_type_avatar');
+const inputAvatarLink = page.querySelector('.popup__input_type_avatar-link');
+const formAvatar = page.querySelector('.popup_type_avatar .popup__form');
 
 // Получение массива объектов карточек с сервера, объекта с информацией о пользователе, вставка их в DOM
 Promise.all([getCards(config), getUserProfile(config)])
@@ -37,12 +40,37 @@ Promise.all([getCards(config), getUserProfile(config)])
     profileName.textContent = userData.name // Добавление имени пользователя в DOM
     profileDescription.textContent = userData.about // Добавление описания пользователя в DOM
     profileImage.style.backgroundImage = `url(${userData.avatar})` // Добавление ссылки на картинку для аватара в DOM
-    const currentUserId = userData._id;
+    const currentUserId = userData._id; // Запись id пользователя
 
     cards.forEach(card => {
       plasesList.append(makeCard(card, deleteCard, likeCard, setImageToPopup, openPopupImage, currentUserId));
     });
+    
   })
+  .catch((err) => console.log(err))
+
+// Функция открытия поп-апа смены аватара 
+function openPopupAvatar() {
+  formAvatar.reset();
+  clearValidation(formAvatar, validationSettings);
+  openPopup(popupAvatar);
+}
+
+// Функция смены аватара профиля
+function handleFormAvatarSubmit(evt) {
+  evt.preventDefault();
+  renderLoading(true, popupAvatar);
+  const newAvatarLink = inputAvatarLink.value;
+  patchAvatar(config, newAvatarLink)
+    .then((userDataEdited) => {
+    avatarProfile.style.backgroundImage = `url(${userDataEdited.avatar})`;
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      renderLoading(false, popupAvatar);
+    })
+    closePopup(popupAvatar); 
+}
 
 // Функция открытия поп-апа редактирования профиля 
 function openPopupProfileEdit() {
@@ -52,11 +80,57 @@ function openPopupProfileEdit() {
   openPopup(popupEditProfile);
 }
 
+// Функция изменения данных профиля
+function handleFormEditProfileSubmit(evt) {
+  evt.preventDefault();
+  renderLoading(true, popupEditProfile); 
+  const nameValue = inputProfileName.value;
+  const descriptionValue = inputProfileDescription.value;
+  patchEditedUserProfile(config, nameValue, descriptionValue)
+    .then(userDataEdited => {
+      profileName.textContent = userDataEdited.name;
+      profileDescription.textContent = userDataEdited.about;
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      renderLoading(false, popupEditProfile)
+    })
+  closePopup(popupEditProfile); 
+}
+
 // Функция открытия поп-апа добавления карточки
 function openPopupAddCard() {
   formAddCard.reset();
   clearValidation(formAddCard, validationSettings);
   openPopup(popupAddCard);
+}
+
+// Функция добавления новой карточки
+function handleFormAddCardSubmit(evt) {
+  evt.preventDefault();
+  renderLoading(true, popupAddCard);
+  const cardObject = {};
+  cardObject.name = inputPlaceNameForm.value;
+  cardObject.alt = inputPlaceNameForm.value;
+  cardObject.link = inputLinkImageForm.value;
+  postCard(config, cardObject)
+    .then((card) => {
+      const currentUserId = card.owner._id;
+      const newCard = makeCard(card, deleteCard, likeCard, setImageToPopup, openPopupImage, currentUserId);
+      plasesList.prepend(newCard);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      renderLoading(false, popupAddCard);
+    })
+  closePopup(popupAddCard);
+  formAddCard.reset();
+  clearValidation(formAddCard, validationSettings);
+}
+
+// Функция открытия поп-апа картинки
+function openPopupImage() {
+  openPopup(popupImage);
 }
 
 // Функция добавления картинки в поп-ап картинки 
@@ -70,45 +144,15 @@ function setImageToPopup(evt) {
   } 
 }
 
-// Функция открытия поп-апа картинки
-function openPopupImage() {
-  openPopup(popupImage);
-}
-
-// Функция добавления новой карточки
-function handleFormAddCardSubmit(evt) {
-  evt.preventDefault();
-  const cardObject = {};
-  cardObject.name = inputPlaceNameForm.value;
-  cardObject.alt = inputPlaceNameForm.value;
-  cardObject.link = inputLinkImageForm.value;
-  postCard(config, cardObject)
-    .then((card) => {
-      const currentUserId = card.owner._id;
-      const newCard = makeCard(card, deleteCard, likeCard, setImageToPopup, openPopupImage, currentUserId);
-      plasesList.prepend(newCard);
-})
-  closePopup(popupAddCard);
-  formAddCard.reset();
-  clearValidation(formAddCard, validationSettings);
+// Функция показа процесса загрузки данных на кнопке 
+const renderLoading = (isLoading, popupElement) => {
+  const popupButton = popupElement.querySelector('.popup__button');
+  isLoading ? popupButton.textContent = 'Сохранение...' : popupButton.textContent = 'Сохранить';
 }
 
 // Фукнция закрытия поп-апа кликом на крестик
 function closePopupByButton (evt) {
   closePopup(evt.target.closest('.popup'));
-}
-
-// Функция изменения данных профиля
-function handleFormEditProfileSubmit(evt) {
-  evt.preventDefault(); 
-  const nameValue = inputProfileName.value;
-  const descriptionValue = inputProfileDescription.value;
-  patchEditedUserProfile(config, nameValue, descriptionValue)
-    .then(userDataEdited => {
-      profileName.textContent = userDataEdited.name;
-      profileDescription.textContent = userDataEdited.about;
-    });
-  closePopup(popupEditProfile); 
 }
 
 // Обработчики закрытия поп-апов кликом по кнопке крестик
@@ -121,8 +165,14 @@ popups.forEach(function(popup) {
   popup.addEventListener('click', closePopUpByOverlay);
 });
 
+// Обработчик submit смены аватара профиля
+formAvatar.addEventListener('submit', handleFormAvatarSubmit);
+
 // Обработчик submit сохранения данных профиля
 formEditProfile.addEventListener('submit', handleFormEditProfileSubmit);
+
+// Обработчик открытия поп-апа смены автара
+avatarProfile.addEventListener('click', openPopupAvatar);
 
 // Обработчик открытия поп-апа редактирования профиля
 profileEditButton.addEventListener('click', openPopupProfileEdit);

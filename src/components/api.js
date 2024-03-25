@@ -9,14 +9,12 @@ const config = {
   }
 }
 
-// Функция получения данных о пользователе с сервера
+// Функция получения данных пользователя с сервера
 const getUserProfile = (config) => {
-
-return fetch(`${config.baseUrl + '/users/me'}`, {
-  headers: config.headers,
-})
+  return fetch(`${config.baseUrl + '/users/me'}`, {
+    headers: config.headers,
+  })
   .then(userData => userData.ok ? userData.json() : Promise.reject(`Ошибка: ${userData.status}`))
-  .catch(error => console.log(error))
 };
 
 // Функция получения карточек с сервера
@@ -25,7 +23,6 @@ const getCards = (config) => {
     headers: config.headers,
   })
   .then(cards => cards.ok ? cards.json() : Promise.reject(`Ошибка: ${cards.status}`))
-  .catch(error => console.log(error))
 };
 
 // Функция отправки измененных данных профиля пользователя на сервер
@@ -39,7 +36,6 @@ const patchEditedUserProfile = (config, nameValue, descriptionValue) => {
     })
   })
   .then(userDataEdited => userDataEdited.ok ? userDataEdited.json() : Promise.reject(`Ошибка: ${userDataEdited.status}`))
-  .catch(error => console.log(error))
 }
 
 // Функция добавления карточки на сервер
@@ -54,7 +50,6 @@ const postCard = (config, cardObject) => {
     })
   })
   .then((res) => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`))
-  .catch((error) => console.log(error))
 }
 
 // Функция удаления карточки с сервера
@@ -72,7 +67,6 @@ const putLikeCard = (config, cardId) => {
     headers: config.headers,
   })
   .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`))
-  .catch(error => console.log(error))
 }
 
 // Функция снятия лайка на сервере
@@ -82,8 +76,19 @@ const deleteLikeCard = (config, cardId) => {
     headers: config.headers,
   })
   .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`))
-  .catch(error => console.log(error))
 }
 
-export { config, getUserProfile, getCards, patchEditedUserProfile, postCard, deleteCardFromServer, putLikeCard, deleteLikeCard }
+// Функция смены аватара на сервере
+const patchAvatar = (config, avatarLink) => {
+  return fetch(`${config.baseUrl + '/users/me/avatar'}`, {
+    method: 'PATCH',
+    headers: config.headers,
+    body: JSON.stringify({
+      avatar: avatarLink,
+    })
+  })
+  .then(res => res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`))
+}
+
+export { config, getUserProfile, getCards, patchEditedUserProfile, postCard, deleteCardFromServer, putLikeCard, deleteLikeCard, patchAvatar }
 
