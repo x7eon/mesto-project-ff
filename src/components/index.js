@@ -61,7 +61,6 @@ function handleFormAvatarSubmit(evt) {
   evt.preventDefault();
   renderLoading(true, popupAvatar);
   const newAvatarLink = inputAvatarLink.value;
-  isCorrectUrl(newAvatarLink);
   patchAvatar(config, newAvatarLink)
     .then((userDataEdited) => {
     avatarProfile.style.backgroundImage = `url(${userDataEdited.avatar})`;
