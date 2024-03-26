@@ -1,11 +1,11 @@
-.popup_type_confirm .popup__content {
+.popup_type_avatar .popup__content {
   min-height: 181px;
 }
 
-.popup_type_confirm .popup__button {
+.popup_type_avatar .popup__button {
   margin-top: 38px;
 }
 
-.popup_type_confirm .popup__content {
+.popup_type_avatar .popup__content {
   padding: 34px 36px 36px;
 }
