@@ -5,11 +5,7 @@ import {
   deleteLikeCard,
 } from './api.js';
 
-//новый импорт
-import { openPopupConfirmDeleteCard } from './index.js';
-
-export let cardIdToDelete;
-export let cardElementToDelete;
+export const cardDeleteConfig = { };
 
 // Функция создания карточки
 function makeCard(
@@ -17,7 +13,8 @@ function makeCard(
   likeCard,
   setImageToPopup,
   openPopupImage,
-  currentUserId
+  currentUserId,
+  openPopupConfirmDeleteCard
 ) {
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
@@ -42,25 +39,15 @@ function makeCard(
     cardButtonLike.classList.add('card__like-button_is-active');
   }
 
-  // НОВЫЙ КОД
-
   // Обаботчик открытия поп-апа подтверждения удаления карточки
   cardDelButton.addEventListener('click', (evt) => {
-    cardIdToDelete = cardId;
-    cardElementToDelete = evt.target.closest('.card');
+    cardDeleteConfig.cardIdToDelete = cardId;
+    cardDeleteConfig.cardElementToDelete = evt.target.closest('.card');
     openPopupConfirmDeleteCard();
   });
 
-  // КОНЕЦ НОВОГО КОДА
-
-  // cardDelButton.addEventListener('click', (evt) => { // обработчик удаления карточки с сервера и из DOM
-  //   deleteCardFromServer(config, cardId)
-  //     .then(deleteCard(evt))
-  //     .catch((err) => console.log(err))
-  // });
-
+  // Обработчик лайка карточки
   cardButtonLike.addEventListener('click', (evt) => {
-    // Обработчик лайка карточки
     if (!isLikedByCurrentUser(likesArray, currentUserId)) {
       putLikeCard(config, cardId)
         .then((cardObject) => {

@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import { makeCard, deleteCard, likeCard, cardIdToDelete, cardElementToDelete } from './card.js';
+import { makeCard, deleteCard, likeCard, cardDeleteConfig} from './card.js';
 import { openPopup, closePopup, closePopUpByOverlay } from './modal.js';
 import { validationSettings, enableValidation, clearValidation } from './validation.js';
 import {
@@ -66,31 +66,28 @@ Promise.all([getCards(config), getUserProfile(config)])
           setImageToPopup,
           openPopupImage,
           currentUserId,
+          openPopupConfirmDeleteCard
         )
       );
     });
   })
   .catch((err) => console.log(err));
 
-// НОВЫЙ КОД
-
 // Функция открытия поп-апа подтверждения удаления карточки
-export function openPopupConfirmDeleteCard() {
+function openPopupConfirmDeleteCard() {
   openPopup(popupConfirmDeleteCard);
 }
 
 // Обработчик отправки формы подтверждения удаления карточки
 formConfirmDeleteCard.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  deleteCardFromServer(config, cardIdToDelete)
+  deleteCardFromServer(config, cardDeleteConfig.cardIdToDelete)
     .then(() => {
-      deleteCard(cardElementToDelete);
+      deleteCard(cardDeleteConfig.cardElementToDelete);
       closePopup(popupConfirmDeleteCard);
     })
     .catch((err) => console.log(err));
 });
-
-// КОНЕЦ НОВОГО КОДА
 
 // Функция открытия поп-апа смены аватара
 function openPopupAvatar() {
@@ -164,7 +161,8 @@ function handleFormAddCardSubmit(evt) {
         likeCard,
         setImageToPopup,
         openPopupImage,
-        currentUserId
+        currentUserId,
+        openPopupConfirmDeleteCard
       );
       plasesList.prepend(newCard);
     })
