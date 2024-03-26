@@ -1,11 +1,11 @@
 // Объект настроек валидации
 const validationSettings = {
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible",
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible',
 };
 
 // Функция показа ошибки валидации инпута
@@ -26,7 +26,7 @@ const hideInputError = (formElement, inputElement, validationSettings) => {
   const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
   inputElement.classList.remove(validationSettings.inputErrorClass);
   errorElement.classList.remove(validationSettings.errorClass);
-  errorElement.textContent = "";
+  errorElement.textContent = '';
 };
 
 // Функция проверки валидности инпута
@@ -34,7 +34,7 @@ const isValid = (formElement, inputElement, validationSettings) => {
   if (inputElement.validity.patternMismatch) {
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   } else {
-    inputElement.setCustomValidity("");
+    inputElement.setCustomValidity('');
   }
   if (!inputElement.validity.valid) {
     showInputError(
@@ -58,7 +58,7 @@ const setEventListener = (formElement, validationSettings) => {
   );
   toggleButtonState(inputList, buttonElement, validationSettings);
   inputList.forEach((inputElement) => {
-    inputElement.addEventListener("input", () => {
+    inputElement.addEventListener('input', () => {
       isValid(formElement, inputElement, validationSettings);
       toggleButtonState(inputList, buttonElement, validationSettings);
     });
@@ -102,7 +102,7 @@ const clearValidation = (formElement, validationSettings) => {
     validationSettings.submitButtonSelector
   );
   inputList.forEach((inputElement) => {
-    inputElement.setCustomValidity("");
+    inputElement.setCustomValidity('');
     hideInputError(formElement, inputElement, validationSettings);
     toggleButtonState(inputList, buttonElement, validationSettings);
   });

@@ -2,16 +2,16 @@
 //Идентификатор группы: wff-cohort-9
 
 const config = {
-  baseUrl: "https://nomoreparties.co/v1/wff-cohort-9",
+  baseUrl: 'https://nomoreparties.co/v1/wff-cohort-9',
   headers: {
-    authorization: "062c2d24-ce77-4e9f-b919-86bf3fb69e18",
-    "Content-Type": "application/json",
+    authorization: '062c2d24-ce77-4e9f-b919-86bf3fb69e18',
+    'Content-Type': 'application/json',
   },
 };
 
 // Функция получения данных пользователя с сервера
 const getUserProfile = (config) => {
-  return fetch(`${config.baseUrl + "/users/me"}`, {
+  return fetch(`${config.baseUrl + '/users/me'}`, {
     headers: config.headers,
   }).then((userData) =>
     userData.ok ? userData.json() : Promise.reject(`Ошибка: ${userData.status}`)
@@ -20,7 +20,7 @@ const getUserProfile = (config) => {
 
 // Функция получения карточек с сервера
 const getCards = (config) => {
-  return fetch(`${config.baseUrl + "/cards"}`, {
+  return fetch(`${config.baseUrl + '/cards'}`, {
     headers: config.headers,
   }).then((cards) =>
     cards.ok ? cards.json() : Promise.reject(`Ошибка: ${cards.status}`)
@@ -29,8 +29,8 @@ const getCards = (config) => {
 
 // Функция отправки измененных данных профиля пользователя на сервер
 const patchEditedUserProfile = (config, nameValue, descriptionValue) => {
-  return fetch(`${config.baseUrl + "/users/me"}`, {
-    method: "PATCH",
+  return fetch(`${config.baseUrl + '/users/me'}`, {
+    method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
       name: nameValue,
@@ -45,8 +45,8 @@ const patchEditedUserProfile = (config, nameValue, descriptionValue) => {
 
 // Функция добавления карточки на сервер
 const postCard = (config, cardObject) => {
-  return fetch(`${config.baseUrl + "/cards"}`, {
-    method: "POST",
+  return fetch(`${config.baseUrl + '/cards'}`, {
+    method: 'POST',
     headers: config.headers,
     body: JSON.stringify({
       name: cardObject.name,
@@ -60,16 +60,16 @@ const postCard = (config, cardObject) => {
 
 // Функция удаления карточки с сервера
 const deleteCardFromServer = (config, cardId) => {
-  return fetch(`${config.baseUrl + "/cards/" + cardId}`, {
-    method: "DELETE",
+  return fetch(`${config.baseUrl + '/cards/' + cardId}`, {
+    method: 'DELETE',
     headers: config.headers,
   })
 };
 
 // Функция постановки лайка на сервере
 const putLikeCard = (config, cardId) => {
-  return fetch(`${config.baseUrl + "/cards/likes/" + cardId}`, {
-    method: "PUT",
+  return fetch(`${config.baseUrl + '/cards/likes/' + cardId}`, {
+    method: 'PUT',
     headers: config.headers,
   }).then((res) =>
     res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`)
@@ -78,8 +78,8 @@ const putLikeCard = (config, cardId) => {
 
 // Функция снятия лайка на сервере
 const deleteLikeCard = (config, cardId) => {
-  return fetch(`${config.baseUrl + "/cards/likes/" + cardId}`, {
-    method: "DELETE",
+  return fetch(`${config.baseUrl + '/cards/likes/' + cardId}`, {
+    method: 'DELETE',
     headers: config.headers,
   }).then((res) =>
     res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`)
@@ -88,8 +88,8 @@ const deleteLikeCard = (config, cardId) => {
 
 // Функция смены аватара на сервере
 const patchAvatar = (config, avatarLink) => {
-  return fetch(`${config.baseUrl + "/users/me/avatar"}`, {
-    method: "PATCH",
+  return fetch(`${config.baseUrl + '/users/me/avatar'}`, {
+    method: 'PATCH',
     headers: config.headers,
     body: JSON.stringify({
       avatar: avatarLink,
