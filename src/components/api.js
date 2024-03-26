@@ -63,9 +63,10 @@ const deleteCardFromServer = (config, cardId) => {
   return fetch(`${config.baseUrl + '/cards/' + cardId}`, {
     method: 'DELETE',
     headers: config.headers,
-  }).then((res) =>
+  })
+  .then((res) =>
     res.ok ? res : Promise.reject(`Ошибка: ${res.status}`)
-  );
+  )
 };
 
 // Функция постановки лайка на сервере

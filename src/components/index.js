@@ -83,11 +83,9 @@ export function openPopupConfirmDeleteCard() {
 formConfirmDeleteCard.addEventListener('submit', (evt) => {
   evt.preventDefault();
   deleteCardFromServer(config, cardIdToDelete)
-    .then((res) => {
-      if(res.ok) {
-        deleteCard(cardElementToDelete);
-        closePopup(popupConfirmDeleteCard);
-      }
+    .then(() => {
+      deleteCard(cardElementToDelete);
+      closePopup(popupConfirmDeleteCard);
     })
     .catch((err) => console.log(err));
 });
