@@ -4,4 +4,4 @@
 
 * Посмотреть проект можно по ссылке: https://x7eon.github.io/mesto-project-ff/
 
-* [Скриншоты проекта](screens/project-screen.png)
+* ![Скриншоты проекта](screens/project-screen.png)
