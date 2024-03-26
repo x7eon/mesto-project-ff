@@ -14,7 +14,6 @@ export let cardElementToDelete;
 // Функция создания карточки
 function makeCard(
   cardObject,
-  deleteCard,
   likeCard,
   setImageToPopup,
   openPopupImage,
@@ -46,9 +45,9 @@ function makeCard(
   // НОВЫЙ КОД
 
   // Обаботчик открытия поп-апа подтверждения удаления карточки
-  cardDelButton.addEventListener("click", (evt) => {
+  cardDelButton.addEventListener('click', (evt) => {
     cardIdToDelete = cardId;
-    cardElementToDelete = evt.target.closest(".card");
+    cardElementToDelete = evt.target.closest('.card');
     openPopupConfirmDeleteCard();
   });
 
@@ -106,12 +105,6 @@ function updateCountLikes(cardLikesCounter, cardObject) {
 }
 
 // Функция удаления карточки из DOM
-// function deleteCard(evt) {
-//   const card = evt.target.closest('.card');
-//   card.remove();
-// }
-
-// Новая функция удаления карточки!!!!!!!
 function deleteCard(card) {
   card.remove();
 }

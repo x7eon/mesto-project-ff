@@ -1,8 +1,7 @@
 import "../pages/index.css";
-import { makeCard, deleteCard, likeCard } from "./card.js";
+import { makeCard, deleteCard, likeCard, cardIdToDelete, cardElementToDelete } from "./card.js";
 import { openPopup, closePopup, closePopUpByOverlay } from "./modal.js";
-import { validationSettings } from "./validation.js";
-import { enableValidation, clearValidation } from "./validation.js";
+import { validationSettings, enableValidation, clearValidation } from "./validation.js";
 import {
   config,
   getUserProfile,
@@ -10,9 +9,8 @@ import {
   patchEditedUserProfile,
   postCard,
   patchAvatar,
+  deleteCardFromServer
 } from "./api.js";
-
-import { deleteCardFromServer } from "./api.js";
 
 //  Темплейт карточки
 const cardTemplate = document.querySelector("#card-template").content;
@@ -64,12 +62,10 @@ Promise.all([getCards(config), getUserProfile(config)])
       plasesList.append(
         makeCard(
           card,
-          deleteCard,
           likeCard,
           setImageToPopup,
           openPopupImage,
           currentUserId,
-          popupConfirmDeleteCard
         )
       );
     });
@@ -83,20 +79,17 @@ export function openPopupConfirmDeleteCard() {
   openPopup(popupConfirmDeleteCard);
 }
 
-import { cardIdToDelete } from "./card.js";
-import { cardElementToDelete } from "./card.js";
-
 // Обработчик отправки формы подтверждения удаления карточки
 formConfirmDeleteCard.addEventListener("submit", (evt) => {
   evt.preventDefault();
   deleteCardFromServer(config, cardIdToDelete)
     .then((res) => {
-      if (res.ok) {
+      if(res.ok) {
         deleteCard(cardElementToDelete);
+        closePopup(popupConfirmDeleteCard);
       }
     })
     .catch((err) => console.log(err));
-  closePopup(popupConfirmDeleteCard);
 });
 
 // КОНЕЦ НОВОГО КОДА
@@ -170,7 +163,6 @@ function handleFormAddCardSubmit(evt) {
       const currentUserId = card.owner._id;
       const newCard = makeCard(
         card,
-        deleteCard,
         likeCard,
         setImageToPopup,
         openPopupImage,
