@@ -64,9 +64,11 @@ const deleteCardFromServer = (config, cardId) => {
     method: 'DELETE',
     headers: config.headers,
   })
-  .then((res) =>
-    res.ok ? res : Promise.reject(`Ошибка: ${res.status}`)
-  )
+  .then((res) => {
+    if(!res.ok) {
+      return Promise.reject(`Ошибка: ${res.status}`)
+    }
+  })
 };
 
 // Функция постановки лайка на сервере
