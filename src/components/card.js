@@ -1,8 +1,14 @@
 import { cardTemplate } from './index.js';
 import { config, deleteCardFromServer, putLikeCard, deleteLikeCard } from './api.js';
 
+//новый импорт
+import { openPopupConfirmDeleteCard } from './index.js';
+
+export let cardIdToDelete;
+export let cardElementToDelete;
+
 // Функция создания карточки
-function makeCard(cardObject, deleteCard, likeCard, setImageToPopup, openPopupImage, currentUserId) {
+function makeCard(cardObject, deleteCard, likeCard, setImageToPopup, openPopupImage, currentUserId, ) {
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
   const cardTitle = cardElement.querySelector('.card__title');
@@ -25,12 +31,24 @@ function makeCard(cardObject, deleteCard, likeCard, setImageToPopup, openPopupIm
   if (isLikedByCurrentUser(likesArray, currentUserId)) {
     cardButtonLike.classList.add('card__like-button_is-active');
   }
+
+  // НОВЫЙ КОД
   
-  cardDelButton.addEventListener('click', (evt) => { // обработчик удаления карточки с сервера и из DOM
-    deleteCardFromServer(config, cardId)
-      .then(deleteCard(evt))
-      .catch((err) => console.log(err))
+  // Обаботчик открытия поп-апа подтверждения удаления карточки
+  cardDelButton.addEventListener('click', (evt) => {
+    cardIdToDelete = cardId;
+    cardElementToDelete = evt.target.closest('.card');
+    openPopupConfirmDeleteCard();
   });
+
+  
+  // КОНЕЦ НОВОГО КОДА
+  
+  // cardDelButton.addEventListener('click', (evt) => { // обработчик удаления карточки с сервера и из DOM
+  //   deleteCardFromServer(config, cardId)
+  //     .then(deleteCard(evt))
+  //     .catch((err) => console.log(err))
+  // });
 
   cardButtonLike.addEventListener('click', (evt) => { // Обработчик лайка карточки
     if(!isLikedByCurrentUser(likesArray, currentUserId)) {    
@@ -77,8 +95,13 @@ function updateCountLikes(cardLikesCounter, cardObject) {
 }
 
 // Функция удаления карточки из DOM
-function deleteCard(evt) {
-  const card = evt.target.closest('.card');
+// function deleteCard(evt) {
+//   const card = evt.target.closest('.card');
+//   card.remove();
+// }
+
+// Новая функция удаления карточки!!!!!!!
+function deleteCard(card) {
   card.remove();
 }
 

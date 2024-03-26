@@ -5,6 +5,8 @@ import { validationSettings } from './validation.js';
 import { enableValidation, clearValidation } from './validation.js';
 import { config, getUserProfile, getCards, patchEditedUserProfile, postCard, patchAvatar } from './api.js';
 
+import { deleteCardFromServer } from './api.js';
+
 //  Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
 
@@ -34,6 +36,9 @@ const popupAvatar = page.querySelector('.popup_type_avatar');
 const inputAvatarLink = page.querySelector('.popup__input_type_avatar-link');
 const formAvatar = page.querySelector('.popup_type_avatar .popup__form');
 
+const popupConfirmDeleteCard = page.querySelector('.popup_type_confirm');
+const formConfirmDeleteCard = page.querySelector('.popup_type_confirm .popup__form')
+
 // Получение массива объектов карточек с сервера, объекта с информацией о пользователе, вставка их в DOM
 Promise.all([getCards(config), getUserProfile(config)])
   .then(([cards, userData]) => {
@@ -43,11 +48,37 @@ Promise.all([getCards(config), getUserProfile(config)])
     const currentUserId = userData._id; // Запись id пользователя
 
     cards.forEach(card => {
-      plasesList.append(makeCard(card, deleteCard, likeCard, setImageToPopup, openPopupImage, currentUserId));
+      plasesList.append(makeCard(card, deleteCard, likeCard, setImageToPopup, openPopupImage, currentUserId, popupConfirmDeleteCard));
     });
     
   })
   .catch((err) => console.log(err))
+
+
+// НОВЫЙ КОД
+
+// Функция открытия поп-апа подтверждения удаления карточки
+export function openPopupConfirmDeleteCard() {
+  openPopup(popupConfirmDeleteCard);
+}
+
+import { cardIdToDelete } from './card.js';
+import { cardElementToDelete } from './card.js';
+
+// Обработчик отправки формы подтверждения удаления карточки
+formConfirmDeleteCard.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  deleteCardFromServer(config, cardIdToDelete)
+    .then((res) => {
+      if (res.ok) {
+        deleteCard(cardElementToDelete);
+      }
+    })
+    .catch(err => console.log(err))
+  closePopup(popupConfirmDeleteCard);
+});
+
+// КОНЕЦ НОВОГО КОДА
 
 // Функция открытия поп-апа смены аватара 
 function openPopupAvatar() {
