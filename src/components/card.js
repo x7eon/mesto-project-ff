@@ -5,8 +5,6 @@ import {
   deleteLikeCard,
 } from './api.js';
 
-export const cardDeleteConfig = { };
-
 // Функция создания карточки
 function makeCard(
   cardObject,
@@ -14,7 +12,7 @@ function makeCard(
   setImageToPopup,
   openPopupImage,
   currentUserId,
-  openPopupConfirmDeleteCard
+  openPopupConfirmDeleteCard,
 ) {
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
@@ -30,6 +28,7 @@ function makeCard(
   cardTitle.textContent = cardObject.name;
   cardImage.alt = cardObject.name;
   cardLikesCounter.textContent = likesArray.length;
+  cardLikesCounter.textContent = cardObject.likes.length;
 
   if (!isOwnerCard(ownerId, currentUserId)) {
     cardDelButton.remove(); // Удаление кнопки удаления карточки из DOM
@@ -41,9 +40,7 @@ function makeCard(
 
   // Обаботчик открытия поп-апа подтверждения удаления карточки
   cardDelButton.addEventListener('click', (evt) => {
-    cardDeleteConfig.cardIdToDelete = cardId;
-    cardDeleteConfig.cardElementToDelete = evt.target.closest('.card');
-    openPopupConfirmDeleteCard();
+    openPopupConfirmDeleteCard(cardId, evt.target.closest('.card'));
   });
 
   // Обработчик лайка карточки
@@ -67,8 +64,13 @@ function makeCard(
     }
   });
 
-  cardImage.addEventListener('click', setImageToPopup); // Обработчик добавления картинки в поп-ап картинки
-  cardImage.addEventListener('click', openPopupImage); // обработчик открытия поп-апа картинки
+  // Обработчик добавления картинки в поп-ап картинки
+  cardImage.addEventListener('click', () => {
+    setImageToPopup(cardObject.name, cardObject.link)
+  }); 
+
+  // обработчик открытия поп-апа картинки
+  cardImage.addEventListener('click', openPopupImage); 
 
   return cardElement;
 }

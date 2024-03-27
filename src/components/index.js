@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import { makeCard, deleteCard, likeCard, cardDeleteConfig} from './card.js';
+import { makeCard, deleteCard, likeCard, } from './card.js';
 import { openPopup, closePopup, closePopUpByOverlay } from './modal.js';
 import { validationSettings, enableValidation, clearValidation } from './validation.js';
 import {
@@ -44,11 +44,21 @@ const avatarProfile = page.querySelector('.profile__image');
 const popupAvatar = page.querySelector('.popup_type_avatar');
 const inputAvatarLink = page.querySelector('.popup__input_type_avatar-link');
 const formAvatar = page.querySelector('.popup_type_avatar .popup__form');
-
 const popupConfirmDeleteCard = page.querySelector('.popup_type_confirm');
 const formConfirmDeleteCard = page.querySelector(
   '.popup_type_confirm .popup__form'
 );
+
+const buttonSubmitAvatar = page.querySelector('.popup_type_avatar .popup__button');
+const buttonSubmitEditProfile = page.querySelector('.popup_type_edit .popup__button');
+const buttonSubmitAddCard = page.querySelector('.popup_type_new-card .popup__button');
+const buttonSubmitDelCard = page.querySelector('.popup_type_confirm .popup__button');
+const buttonTextSettings = { 
+  loading: 'Сохранение...',
+  endLoading:  'Сохранить',
+  deleting: 'Удаление...',
+  endDeleting: 'Да'
+}
 
 // Получение массива объектов карточек с сервера, объекта с информацией о пользователе, вставка их в DOM
 Promise.all([getCards(config), getUserProfile(config)])
@@ -66,27 +76,36 @@ Promise.all([getCards(config), getUserProfile(config)])
           setImageToPopup,
           openPopupImage,
           currentUserId,
-          openPopupConfirmDeleteCard
+          openPopupConfirmDeleteCard,
         )
       );
     });
   })
   .catch((err) => console.log(err));
 
+let cardIdToDelete;
+let cardElementToDelete;
+
 // Функция открытия поп-апа подтверждения удаления карточки
-function openPopupConfirmDeleteCard() {
+function openPopupConfirmDeleteCard(cardId, currentCard) {
+  cardIdToDelete = cardId;
+  cardElementToDelete = currentCard;
   openPopup(popupConfirmDeleteCard);
 }
 
 // Обработчик отправки формы подтверждения удаления карточки
 formConfirmDeleteCard.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  deleteCardFromServer(config, cardDeleteConfig.cardIdToDelete)
+  renderLoading(buttonSubmitDelCard, buttonTextSettings.deleting)
+  deleteCardFromServer(config, cardIdToDelete)
     .then(() => {
-      deleteCard(cardDeleteConfig.cardElementToDelete);
+      deleteCard(cardElementToDelete);
       closePopup(popupConfirmDeleteCard);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err))
+    .finally(() => {
+      renderLoading(buttonSubmitDelCard, buttonTextSettings.endDeleting)
+    })
 });
 
 // Функция открытия поп-апа смены аватара
@@ -99,7 +118,7 @@ function openPopupAvatar() {
 // Функция смены аватара профиля
 function handleFormAvatarSubmit(evt) {
   evt.preventDefault();
-  renderLoading(true, popupAvatar);
+  renderLoading(buttonSubmitAvatar, buttonTextSettings.loading)
   const newAvatarLink = inputAvatarLink.value;
   patchAvatar(config, newAvatarLink)
     .then((userDataEdited) => {
@@ -107,7 +126,7 @@ function handleFormAvatarSubmit(evt) {
     })
     .catch((err) => console.log(err))
     .finally(() => {
-      renderLoading(false, popupAvatar);
+      renderLoading(buttonSubmitAvatar, buttonTextSettings.endLoading)
     });
   closePopup(popupAvatar);
 }
@@ -123,7 +142,7 @@ function openPopupProfileEdit() {
 // Функция изменения данных профиля
 function handleFormEditProfileSubmit(evt) {
   evt.preventDefault();
-  renderLoading(true, popupEditProfile);
+  renderLoading(buttonSubmitEditProfile, buttonTextSettings.loading)
   const nameValue = inputProfileName.value;
   const descriptionValue = inputProfileDescription.value;
   patchEditedUserProfile(config, nameValue, descriptionValue)
@@ -133,7 +152,7 @@ function handleFormEditProfileSubmit(evt) {
     })
     .catch((err) => console.log(err))
     .finally(() => {
-      renderLoading(false, popupEditProfile);
+      renderLoading(buttonSubmitEditProfile, buttonTextSettings.endLoading)
     });
   closePopup(popupEditProfile);
 }
@@ -148,10 +167,9 @@ function openPopupAddCard() {
 // Функция добавления новой карточки
 function handleFormAddCardSubmit(evt) {
   evt.preventDefault();
-  renderLoading(true, popupAddCard);
+  renderLoading(buttonSubmitAddCard, buttonTextSettings.loading);
   const cardObject = {};
   cardObject.name = inputPlaceNameForm.value;
-  cardObject.alt = inputPlaceNameForm.value;
   cardObject.link = inputLinkImageForm.value;
   postCard(config, cardObject)
     .then((card) => {
@@ -162,13 +180,13 @@ function handleFormAddCardSubmit(evt) {
         setImageToPopup,
         openPopupImage,
         currentUserId,
-        openPopupConfirmDeleteCard
+        openPopupConfirmDeleteCard,
       );
       plasesList.prepend(newCard);
     })
     .catch((err) => console.log(err))
     .finally(() => {
-      renderLoading(false, popupAddCard);
+      renderLoading(buttonSubmitAddCard, buttonTextSettings.endLoading);
     });
   closePopup(popupAddCard);
   formAddCard.reset();
@@ -181,22 +199,15 @@ function openPopupImage() {
 }
 
 // Функция добавления картинки в поп-ап картинки
-function setImageToPopup(evt) {
-  const card = evt.target.closest('.card');
-  const cardTitle = card.querySelector('.card__title');
-  if (evt.target.classList.contains('card__image')) {
-    imagePopup.src = evt.target.src;
-    captionImagePopup.textContent = cardTitle.textContent;
-    imagePopup.alt = cardTitle.textContent;
-  }
-}
+function setImageToPopup(name, link) {
+    imagePopup.src = link;
+    captionImagePopup.textContent = name;
+    imagePopup.alt = name;
+};
 
 // Функция показа процесса загрузки данных на кнопке
-const renderLoading = (isLoading, popupElement) => {
-  const popupButton = popupElement.querySelector('.popup__button');
-  isLoading
-    ? (popupButton.textContent = 'Сохранение...')
-    : (popupButton.textContent = 'Сохранить');
+const renderLoading = (button, content) => {
+  button.textContent = content;
 };
 
 // Фукнция закрытия поп-апа кликом на крестик
@@ -218,6 +229,8 @@ popups.forEach(function (popup) {
 formAvatar.addEventListener('submit', handleFormAvatarSubmit);
 
 // Обработчик submit сохранения данных профиля
+// formEditProfile.addEventListener('submit', handleFormEditProfileSubmit);
+
 formEditProfile.addEventListener('submit', handleFormEditProfileSubmit);
 
 // Обработчик открытия поп-апа смены автара
