@@ -34,7 +34,10 @@ function makeCard(
     cardDelButton.remove(); // Удаление кнопки удаления карточки из DOM
   }
 
-  if (isLikedByCurrentUser(likesArray, currentUserId)) {
+  // if (isLikedByCurrentUser(likesArray, currentUserId)) {
+  //   cardButtonLike.classList.add('card__like-button_is-active');
+  // }
+  if (checkStatusLike(likesArray, currentUserId)) {
     cardButtonLike.classList.add('card__like-button_is-active');
   }
 
@@ -66,7 +69,10 @@ function makeCard(
 
   // Обработчик лайка карточки новый
   cardButtonLike.addEventListener('click', () => {
-    handleLikeCard(checkStatusLike(likesArray, currentUserId), cardId, cardButtonLike, cardLikesCounter, likesArray)
+    handleLikeCard(checkStatusLike(likesArray, currentUserId), cardId, cardButtonLike, cardLikesCounter, 
+    (arr) => {
+      likesArray = arr;
+    })
   });
 
   // Обработчик добавления картинки в поп-ап картинки
@@ -89,9 +95,9 @@ function isOwnerCard(ownerId, currentId) {
 }
 
 // Функция проверки лайкнутости
-function isLikedByCurrentUser(likesArray, currentUserId) {
-  return likesArray.some((userObject) => userObject._id === currentUserId);
-}
+// function isLikedByCurrentUser(likesArray, currentUserId) {
+//   return likesArray.some((userObject) => userObject._id === currentUserId);
+// }
 
 // Функция обновления счетчика лайков
 function updateCountLikes(cardLikesCounter, cardObject) {
@@ -107,7 +113,6 @@ function deleteCard(card) {
 // function likeCard(evt) {
 //   evt.target.classList.toggle('card__like-button_is-active');
 // }
-
 
 // Функция проверки статуса лайка НОВАЯ
 function checkStatusLike(likesArray, currentUserId) {

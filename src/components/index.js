@@ -253,18 +253,18 @@ import { changeLike } from './card.js'
 import { putLikeCard, deleteLikeCard } from './api.js'
 
 // Функция лайка карточки
-function handleLikeCard(status, cardId, cardButtonLike, cardLikesCounter, likesArray) {
+function handleLikeCard(status, cardId, cardButtonLike, cardLikesCounter, updateLikesArray) {
   !status ?
   putLikeCard(config, cardId)
   .then(res => {
-    likesArray = res.likes;
-    changeLike(likesArray, cardButtonLike, cardLikesCounter);
+    updateLikesArray(res.like);
+    changeLike(res.likes, cardButtonLike, cardLikesCounter);
   })
   .catch(err => console.log(err)) 
   : deleteLikeCard(config, cardId)
   .then(res => {
-    likesArray = res.likes;
-    changeLike(likesArray, cardButtonLike, cardLikesCounter);
+    updateLikesArray(res.like);
+    changeLike(res.likes, cardButtonLike, cardLikesCounter);
   })
   .catch(err => console.log(err))
 }
