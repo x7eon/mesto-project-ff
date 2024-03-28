@@ -1,5 +1,6 @@
 import '../pages/index.css';
-import { makeCard, deleteCard, likeCard, } from './card.js';
+import { makeCard, deleteCard,  } from './card.js';
+//likeCard
 import { openPopup, closePopup, closePopUpByOverlay } from './modal.js';
 import { validationSettings, enableValidation, clearValidation } from './validation.js';
 import {
@@ -9,7 +10,8 @@ import {
   patchEditedUserProfile,
   postCard,
   patchAvatar,
-  deleteCardFromServer
+  // deleteCardFromServer,
+  // putLikeCard
 } from './api.js';
 
 //  Темплейт карточки
@@ -72,11 +74,12 @@ Promise.all([getCards(config), getUserProfile(config)])
       plasesList.append(
         makeCard(
           card,
-          likeCard,
+          // likeCard,
           setImageToPopup,
           openPopupImage,
           currentUserId,
           openPopupConfirmDeleteCard,
+          handleLikeCard,
         )
       );
     });
@@ -176,11 +179,12 @@ function handleFormAddCardSubmit(evt) {
       const currentUserId = card.owner._id;
       const newCard = makeCard(
         card,
-        likeCard,
         setImageToPopup,
         openPopupImage,
         currentUserId,
         openPopupConfirmDeleteCard,
+        handleLikeCard,
+        card.likes
       );
       plasesList.prepend(newCard);
     })
@@ -244,6 +248,24 @@ cardAddButton.addEventListener('click', openPopupAddCard);
 
 // Обработчик submit для добавления новой карточки
 formAddCard.addEventListener('submit', handleFormAddCardSubmit);
+
+import { changeLike } from './card.js'
+import { putLikeCard, deleteLikeCard } from './api.js'
+
+// Функция лайка карточки
+function handleLikeCard(status, cardId, cardButtonLike, cardLikesCounter, likesArray) {
+  !status ?
+  putLikeCard(config, cardId)
+  .then(res => {
+    changeLike(res.likes, cardButtonLike, cardLikesCounter);   
+  })
+  .catch(err => console.log(err)) 
+  : deleteLikeCard(config, cardId)
+  .then(res => {
+    changeLike(likesArray, cardButtonLike, cardLikesCounter);
+  })
+  .catch(err => console.log(err))
+}
 
 enableValidation(validationSettings);
 
