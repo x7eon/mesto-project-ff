@@ -257,11 +257,13 @@ function handleLikeCard(status, cardId, cardButtonLike, cardLikesCounter, likesA
   !status ?
   putLikeCard(config, cardId)
   .then(res => {
-    changeLike(res.likes, cardButtonLike, cardLikesCounter);   
+    likesArray = res.likes;
+    changeLike(likesArray, cardButtonLike, cardLikesCounter);
   })
   .catch(err => console.log(err)) 
   : deleteLikeCard(config, cardId)
   .then(res => {
+    likesArray = res.likes;
     changeLike(likesArray, cardButtonLike, cardLikesCounter);
   })
   .catch(err => console.log(err))
