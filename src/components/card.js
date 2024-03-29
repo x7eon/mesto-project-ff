@@ -1,20 +1,14 @@
 import { cardTemplate } from './index.js';
-import {
-  config,
-  // putLikeCard,
-  // deleteLikeCard,
-} from './api.js';
 
 // Функция создания карточки
 function makeCard(
   cardObject,
-  // likeCard,
-  setImageToPopup,
-  openPopupImage,
   currentUserId,
-  openPopupConfirmDeleteCard,
-  handleLikeCard,
-  ) {
+  handleSetImageToPopup,
+  handleOpenPopupImage,
+  handleOpenPopupDelCard,
+  handleLikeCard
+) {
   const cardElement = cardTemplate.cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
   const cardTitle = cardElement.querySelector('.card__title');
@@ -34,54 +28,36 @@ function makeCard(
     cardDelButton.remove(); // Удаление кнопки удаления карточки из DOM
   }
 
-  // if (isLikedByCurrentUser(likesArray, currentUserId)) {
-  //   cardButtonLike.classList.add('card__like-button_is-active');
-  // }
+  // Закрашивание кнопки, если карточка была лайкнута пользователем
   if (checkStatusLike(likesArray, currentUserId)) {
     cardButtonLike.classList.add('card__like-button_is-active');
   }
 
-  // Обаботчик открытия поп-апа подтверждения удаления карточки
+  // Установка обаботчика открытия поп-апа подтверждения удаления карточки
   cardDelButton.addEventListener('click', (evt) => {
-    openPopupConfirmDeleteCard(cardId, evt.target.closest('.card'));
+    handleOpenPopupDelCard(cardId, evt.target.closest('.card'));
   });
 
-  // Обработчик лайка карточки
-  // cardButtonLike.addEventListener('click', (evt) => {
-  //   if (!isLikedByCurrentUser(likesArray, currentUserId)) {
-  //     putLikeCard(config, cardId)
-  //       .then((cardObject) => {
-  //         likesArray = cardObject.likes;
-  //         updateCountLikes(cardLikesCounter, cardObject);
-  //       })
-  //       .then(() => likeCard(evt))
-  //       .catch((err) => console.log(err));
-  //   } else {
-  //     deleteLikeCard(config, cardId)
-  //       .then((cardObject) => {
-  //         likesArray = cardObject.likes;
-  //         updateCountLikes(cardLikesCounter, cardObject);
-  //       })
-  //       .then(() => likeCard(evt))
-  //       .catch((err) => console.log(err));
-  //   }
-  // });
-
-  // Обработчик лайка карточки новый
+  // Установка обработчика лайка карточки
   cardButtonLike.addEventListener('click', () => {
-    handleLikeCard(checkStatusLike(likesArray, currentUserId), cardId, cardButtonLike, cardLikesCounter, 
-    (arr) => {
-      likesArray = arr;
-    })
+    handleLikeCard(
+      checkStatusLike(likesArray, currentUserId),
+      cardId,
+      cardButtonLike,
+      cardLikesCounter,
+      (newLikesArray) => {
+        likesArray = newLikesArray;
+      }
+    );
   });
 
-  // Обработчик добавления картинки в поп-ап картинки
+  // Установка обработчика добавления картинки в поп-ап картинки
   cardImage.addEventListener('click', () => {
-    setImageToPopup(cardObject.name, cardObject.link)
-  }); 
+    handleSetImageToPopup(cardObject.name, cardObject.link);
+  });
 
-  // обработчик открытия поп-апа картинки
-  cardImage.addEventListener('click', openPopupImage); 
+  // Установка обработчика открытия поп-апа картинки
+  cardImage.addEventListener('click', handleOpenPopupImage);
 
   return cardElement;
 }
@@ -94,37 +70,20 @@ function isOwnerCard(ownerId, currentId) {
   }
 }
 
-// Функция проверки лайкнутости
-// function isLikedByCurrentUser(likesArray, currentUserId) {
-//   return likesArray.some((userObject) => userObject._id === currentUserId);
-// }
-
-// Функция обновления счетчика лайков
-function updateCountLikes(cardLikesCounter, cardObject) {
-  cardLikesCounter.textContent = cardObject.likes.length;
-}
-
 // Функция удаления карточки из DOM
 function deleteCard(card) {
   card.remove();
 }
-
-// Функция переключения класса лайка карточки
-// function likeCard(evt) {
-//   evt.target.classList.toggle('card__like-button_is-active');
-// }
 
 // Функция проверки статуса лайка НОВАЯ
 function checkStatusLike(likesArray, currentUserId) {
   return likesArray.some((userObject) => userObject._id === currentUserId);
 }
 
-// Функция обновления кол-ва лайков и цвет кнопки {функция принимает лайки с сервера и обновляет количество и цвет кнопки}
+// Функция обновления кол-ва лайков и цвета кнопки
 function changeLike(likes, cardButtonLike, cardLikesCounter) {
   cardLikesCounter.textContent = likes.length;
   cardButtonLike.classList.toggle('card__like-button_is-active');
 }
 
-// export { makeCard, deleteCard, likeCard };
 export { makeCard, deleteCard, changeLike };
-

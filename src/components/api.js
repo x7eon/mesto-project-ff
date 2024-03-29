@@ -10,22 +10,21 @@ const config = {
 };
 
 // Функция проверки ответа сервера
-const checkResponse = (res) => (res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`)) 
+const checkResponse = (res) =>
+  res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
 
 // Функция получения данных пользователя с сервера
 const getUserProfile = (config) => {
   return fetch(`${config.baseUrl + '/users/me'}`, {
     headers: config.headers,
-  })
-  .then(res => checkResponse(res))
+  }).then((res) => checkResponse(res));
 };
 
 // Функция получения карточек с сервера
 const getCards = (config) => {
   return fetch(`${config.baseUrl + '/cards'}`, {
     headers: config.headers,
-  })
-  .then(res => checkResponse(res))
+  }).then((res) => checkResponse(res));
 };
 
 // Функция отправки измененных данных профиля пользователя на сервер
@@ -37,7 +36,7 @@ const patchEditedUserProfile = (config, nameValue, descriptionValue) => {
       name: nameValue,
       about: descriptionValue,
     }),
-  }).then(res => checkResponse(res))
+  }).then((res) => checkResponse(res));
 };
 
 // Функция добавления карточки на сервер
@@ -50,7 +49,7 @@ const postCard = (config, cardObject) => {
       alt: cardObject.name,
       link: cardObject.link,
     }),
-  }).then(res => checkResponse(res))
+  }).then((res) => checkResponse(res));
 };
 
 // Функция удаления карточки с сервера
@@ -58,8 +57,7 @@ const deleteCardFromServer = (config, cardId) => {
   return fetch(`${config.baseUrl + '/cards/' + cardId}`, {
     method: 'DELETE',
     headers: config.headers,
-  })
-  .then(res => checkResponse(res))
+  }).then((res) => checkResponse(res));
 };
 
 // Функция постановки лайка на сервере
@@ -67,7 +65,7 @@ const putLikeCard = (config, cardId) => {
   return fetch(`${config.baseUrl + '/cards/likes/' + cardId}`, {
     method: 'PUT',
     headers: config.headers,
-  }).then(res => checkResponse(res))
+  }).then((res) => checkResponse(res));
 };
 
 // Функция снятия лайка на сервере
@@ -75,7 +73,7 @@ const deleteLikeCard = (config, cardId) => {
   return fetch(`${config.baseUrl + '/cards/likes/' + cardId}`, {
     method: 'DELETE',
     headers: config.headers,
-  }).then(res => checkResponse(res))
+  }).then((res) => checkResponse(res));
 };
 
 // Функция смены аватара на сервере
@@ -86,7 +84,7 @@ const patchAvatar = (config, avatarLink) => {
     body: JSON.stringify({
       avatar: avatarLink,
     }),
-  }).then(res => checkResponse(res))
+  }).then((res) => checkResponse(res));
 };
 
 export {
