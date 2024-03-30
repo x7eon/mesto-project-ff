@@ -123,12 +123,12 @@ function handleFormAvatarSubmit(evt) {
   patchAvatar(config, newAvatarLink)
     .then((userDataEdited) => {
       avatarProfile.style.backgroundImage = `url(${userDataEdited.avatar})`;
+      closePopup(popupAvatar);
     })
     .catch((err) => console.log(err))
     .finally(() => {
       renderLoading(buttonSubmitAvatar, buttonTextSettings.endLoading);
     });
-  closePopup(popupAvatar);
 }
 
 // Обработчик открытия поп-апа редактирования профиля
@@ -149,12 +149,12 @@ function handleFormEditProfileSubmit(evt) {
     .then((userDataEdited) => {
       profileName.textContent = userDataEdited.name;
       profileDescription.textContent = userDataEdited.about;
+      closePopup(popupEditProfile);
     })
     .catch((err) => console.log(err))
     .finally(() => {
       renderLoading(buttonSubmitEditProfile, buttonTextSettings.endLoading);
     });
-  closePopup(popupEditProfile);
 }
 
 // Обработчик открытия поп-апа добавления карточки
@@ -183,14 +183,13 @@ function handleFormAddCardSubmit(evt) {
         handleLikeCard
       );
       plasesList.prepend(newCard);
+      closePopup(popupAddCard);
+      formAddCard.reset();
     })
     .catch((err) => console.log(err))
     .finally(() => {
       renderLoading(buttonSubmitAddCard, buttonTextSettings.endLoading);
     });
-  closePopup(popupAddCard);
-  formAddCard.reset();
-  clearValidation(formAddCard, validationSettings);
 }
 
 // Обработчик открытия поп-апа картинки

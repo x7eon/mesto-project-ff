@@ -2,7 +2,11 @@
   font-size: 18px;
   line-height: 22px;
   grid-area: description;
-  margin: 0;
+  margin: 0 10px 0 0;
+  /* добавил св-ва */
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 550px;
 }
 
 @media screen and (max-width: 568px) {

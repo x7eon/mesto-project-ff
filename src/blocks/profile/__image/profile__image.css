@@ -8,6 +8,8 @@
   background-position: center;
   margin: 0 29px 0 0;
   position: relative;
+  /* добавил св-во */
+  min-width: 120px;
 }
 
 .profile__image::before {

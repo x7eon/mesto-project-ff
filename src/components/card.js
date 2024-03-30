@@ -75,7 +75,7 @@ function deleteCard(card) {
   card.remove();
 }
 
-// Функция проверки статуса лайка НОВАЯ
+// Функция проверки статуса лайка
 function checkStatusLike(likesArray, currentUserId) {
   return likesArray.some((userObject) => userObject._id === currentUserId);
 }
