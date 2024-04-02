@@ -25,48 +25,40 @@ const cardTemplate = document.querySelector('#card-template').content;
 const page = document.querySelector('.page');
 const plasesList = page.querySelector('.places__list');
 const popups = page.querySelectorAll('.popup');
-const popupEditProfile = page.querySelector('.popup_type_edit');
-const popupAddCard = page.querySelector('.popup_type_new-card');
-const popupImage = page.querySelector('.popup_type_image');
-const imagePopup = page.querySelector('.popup__image');
-const captionImagePopup = page.querySelector('.popup__caption');
-const profileName = page.querySelector('.profile__title');
-const inputProfileName = page.querySelector('.popup__input_type_name');
-const profileDescription = page.querySelector('.profile__description');
-const inputProfileDescription = page.querySelector(
-  '.popup__input_type_description'
-);
-const formAddCard = page.querySelector('.popup_type_new-card .popup__form');
-const inputPlaceNameForm = formAddCard.querySelector(
-  '.popup__input_type_card-name'
-);
-const inputLinkImageForm = formAddCard.querySelector('.popup__input_type_url');
-const formEditProfile = page.querySelector('.popup_type_edit .popup__form');
-const profileEditButton = page.querySelector('.profile__edit-button');
-const cardAddButton = page.querySelector('.profile__add-button');
 const popupCloseButtons = page.querySelectorAll('.popup__close');
+
+const profileName = page.querySelector('.profile__title');
+const profileDescription = page.querySelector('.profile__description');
 const profileImage = page.querySelector('.profile__image');
+
+const profileEditButton = page.querySelector('.profile__edit-button');
+const popupEditProfile = page.querySelector('.popup_type_edit');
+const formEditProfile = popupEditProfile.querySelector('.popup__form');
+const inputProfileName = formEditProfile.querySelector('.popup__input_type_name');
+const inputProfileDescription = formEditProfile.querySelector('.popup__input_type_description');
+const buttonSubmitEditProfile = formEditProfile.querySelector('.popup__button');
+
+const cardAddButton = page.querySelector('.profile__add-button');
+const popupAddCard = page.querySelector('.popup_type_new-card');
+const formAddCard = popupAddCard.querySelector('.popup__form');
+const inputPlaceNameForm = formAddCard.querySelector('.popup__input_type_card-name');
+const inputLinkImageForm = formAddCard.querySelector('.popup__input_type_url');
+const buttonSubmitAddCard = formAddCard.querySelector('.popup__button');
+
+const popupImage = page.querySelector('.popup_type_image');
+const imagePopup = popupImage.querySelector('.popup__image');
+const captionImagePopup = popupImage.querySelector('.popup__caption');
+
 const avatarProfile = page.querySelector('.profile__image');
 const popupAvatar = page.querySelector('.popup_type_avatar');
-const inputAvatarLink = page.querySelector('.popup__input_type_avatar-link');
-const formAvatar = page.querySelector('.popup_type_avatar .popup__form');
-const popupConfirmDeleteCard = page.querySelector('.popup_type_confirm');
-const formConfirmDeleteCard = page.querySelector(
-  '.popup_type_confirm .popup__form'
-);
+const formAvatar = popupAvatar.querySelector('.popup__form');
+const inputAvatarLink = formAvatar.querySelector('.popup__input_type_avatar-link');
+const buttonSubmitAvatar = formAvatar.querySelector('.popup__button');
 
-const buttonSubmitAvatar = page.querySelector(
-  '.popup_type_avatar .popup__button'
-);
-const buttonSubmitEditProfile = page.querySelector(
-  '.popup_type_edit .popup__button'
-);
-const buttonSubmitAddCard = page.querySelector(
-  '.popup_type_new-card .popup__button'
-);
-const buttonSubmitDelCard = page.querySelector(
-  '.popup_type_confirm .popup__button'
-);
+const popupConfirmDeleteCard = page.querySelector('.popup_type_confirm');
+const formConfirmDeleteCard = popupConfirmDeleteCard.querySelector('.popup__form');
+const buttonSubmitDelCard = formConfirmDeleteCard.querySelector('.popup__button');
+
 const buttonTextSettings = {
   loading: 'Сохранение...',
   endLoading: 'Сохранить',
